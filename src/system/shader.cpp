@@ -1,5 +1,5 @@
-#include "shader.hpp"
-#include "utils.hpp"
+#include "system/shader.hpp"
+#include "system/utils.hpp"
 
 Shader::Shader(const char *vertex_source_file, const char *fragment_source_file)
 {

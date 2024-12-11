@@ -1,4 +1,4 @@
-#include "vbo.hpp"
+#include "system/vbo.hpp"
 
 VBO::VBO(GLfloat *vertices, GLsizeiptr size)
 {
