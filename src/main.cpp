@@ -2,6 +2,7 @@
 
 int main()
 {
-    Activate();
+    auto triforce = TriforceProject();
+    triforce.Activate();
     return 0;
 }
