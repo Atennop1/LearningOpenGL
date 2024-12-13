@@ -3,6 +3,7 @@
 VAO::VAO()
 {
     glGenVertexArrays(1, &id_);
+    Bind();
 }
 
 void VAO::LinkAttributes(VBO VBO, GLuint layout, GLuint num_components, GLenum type, GLsizeiptr stride, void *offset)
@@ -12,7 +13,6 @@ void VAO::LinkAttributes(VBO VBO, GLuint layout, GLuint num_components, GLenum t
     glEnableVertexAttribArray(layout);
     VBO.Unbind();
 }
-
 
 void VAO::Bind() const
 {

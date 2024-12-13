@@ -1,8 +1,8 @@
-#include "projects/triforce.hpp"
+#include "projects/cube.hpp"
 
 int main()
 {
-    auto triforce = TriforceProject();
-    triforce.Activate();
+    auto cube = CubeProject();
+    cube.Activate();
     return 0;
 }

@@ -16,7 +16,9 @@ add_executable(LearningOpenGL
         src/system/vao.cpp
         include/system/vao.hpp
         include/projects/triforce.hpp
-        src/projects/triforce.cpp)
+        src/projects/triforce.cpp
+        src/projects/cube.cpp
+        include/projects/cube.hpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/libs/include include)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/lib/glfw/libglfw3.a)
