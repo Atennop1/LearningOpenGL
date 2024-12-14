@@ -18,7 +18,9 @@ add_executable(LearningOpenGL
         include/projects/triforce.hpp
         src/projects/triforce.cpp
         src/projects/cube.cpp
-        include/projects/cube.hpp)
+        include/projects/cube.hpp
+        src/system/texture.cpp
+        include/system/texture.hpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/libs/include include)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/lib/glfw/libglfw3.a)

@@ -10,6 +10,7 @@ public:
     [[nodiscard]] GLuint GetID() const { return id_; }
 
     void Activate() const;
+    void Deactivate() const;
     void Delete() const;
 
 private:
