@@ -17,8 +17,8 @@ add_executable(LearningOpenGL
         include/system/vao.hpp
         include/projects/triforce.hpp
         src/projects/triforce.cpp
-        src/projects/cube.cpp
-        include/projects/cube.hpp
+        src/projects/pyramid.cpp
+        include/projects/pyramid.hpp
         src/system/texture.cpp
         include/system/texture.hpp)
 

@@ -1,8 +1,8 @@
-#include "projects/cube.hpp"
+#include "projects/pyramid.hpp"
 
 int main()
 {
-    auto cube = CubeProject();
-    cube.Activate();
+    auto pyramid = PyramidProject();
+    pyramid.Activate();
     return 0;
 }
