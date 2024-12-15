@@ -24,7 +24,7 @@ Texture::Texture(const char *path, GLenum texture_type, GLenum slot, GLenum form
     glBindTexture(type_, 0);
 }
 
-void Texture::Activate(Shader shader, const char *uniform_name, GLint texture_slot) const
+void Texture::Activate(Shader &shader, const char *uniform_name, GLint texture_slot) const
 {
     GLint uniform_ID = glGetUniformLocation(shader.GetID(), uniform_name);
     shader.Activate();
