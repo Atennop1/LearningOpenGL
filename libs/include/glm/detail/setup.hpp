@@ -477,7 +477,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Clip control, define GLM_FORCE_DEPTH_ZERO_TO_ONE before including GLM
-// to use a clip space between 0 to 1.
+// to use a clip SpaceProject between 0 to 1.
 // Coordinate system, define GLM_FORCE_LEFT_HANDED before including GLM
 // to use left handed coordinate system by default.
 
@@ -1120,9 +1120,9 @@ namespace detail
 #	endif
 
 #	if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT
-#		pragma message("GLM: GLM_FORCE_DEPTH_ZERO_TO_ONE is defined. Using zero to one depth clip space.")
+#		pragma message("GLM: GLM_FORCE_DEPTH_ZERO_TO_ONE is defined. Using zero to one depth clip SpaceProject.")
 #	else
-#		pragma message("GLM: GLM_FORCE_DEPTH_ZERO_TO_ONE is undefined. Using negative one to one depth clip space.")
+#		pragma message("GLM: GLM_FORCE_DEPTH_ZERO_TO_ONE is undefined. Using negative one to one depth clip SpaceProject.")
 #	endif
 
 #	if GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_LH_BIT

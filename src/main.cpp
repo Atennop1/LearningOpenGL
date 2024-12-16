@@ -1,8 +1,8 @@
-#include "projects/pyramid.hpp"
+#include "projects/space.hpp"
 
 int main()
 {
-    auto pyramid = PyramidProject();
-    pyramid.Activate();
+    auto space = SpaceProject();
+    space.Activate();
     return 0;
 }

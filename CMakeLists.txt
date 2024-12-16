@@ -20,7 +20,7 @@ add_executable(LearningOpenGL
         src/projects/pyramid.cpp
         include/projects/pyramid.hpp
         src/system/texture.cpp
-        include/system/texture.hpp)
+        include/system/texture.hpp src/system/camera.cpp include/system/camera.hpp src/projects/space.cpp include/projects/space.hpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/libs/include include)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/lib/glfw/libglfw3.a)

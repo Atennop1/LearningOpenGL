@@ -121,7 +121,7 @@ RECENT REVISION HISTORY:
 
                      Jacko Dirks
 
-  To add your name to the credits, pick a random blank space in the middle and fill it.
+  To add your name to the credits, pick a random blank SpaceProject in the middle and fill it.
   80% of merge conflicts on stb PRs are due to people adding their name at the end
   of the credits.
 */
@@ -5513,9 +5513,9 @@ static void *stbi__bmp_parse_header(stbi__context *s, stbi__bmp_data *info)
          info->ma = stbi__get32le(s);
          if (compress != 3) // override mr/mg/mb unless in BI_BITFIELDS mode, as per docs
             stbi__bmp_set_mask_defaults(info, compress);
-         stbi__get32le(s); // discard color space
+         stbi__get32le(s); // discard color SpaceProject
          for (i=0; i < 12; ++i)
-            stbi__get32le(s); // discard color space parameters
+            stbi__get32le(s); // discard color SpaceProject parameters
          if (hsz == 124) {
             stbi__get32le(s); // discard rendering intent
             stbi__get32le(s); // discard offset of profile data
