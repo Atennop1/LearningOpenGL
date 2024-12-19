@@ -11,14 +11,19 @@ Camera::Camera(int width, int height, glm::vec3 position)
     position_ = position;
 }
 
-void Camera::Matrix(float FOV_degrees, float near_plane, float far_plane, Shader &shader, const char *uniform)
+void Camera::SetMatrixInfo(float FOV_degrees, float near_plane, float far_plane)
 {
     glm::mat4 view_matrix = glm::mat4(1.0f);
     glm::mat4 projection_matrix = glm::mat4(1.0f);
 
     view_matrix = glm::lookAt(position_, position_ + orientation_, up_);
     projection_matrix = glm::perspective(glm::radians(FOV_degrees), float(width_) / float(height_), near_plane, far_plane);
-    glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), uniform), 1, GL_FALSE, glm::value_ptr(projection_matrix * view_matrix));
+    camera_matrix = projection_matrix * view_matrix;
+}
+
+void Camera::DisplayMatrix(Shader &shader, const char *uniform)
+{
+    glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), uniform), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 }
 
 void Camera::Inputs(GLFWwindow *window)
@@ -27,8 +32,8 @@ void Camera::Inputs(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) position_ += speed_ * -glm::normalize(glm::cross(orientation_, up_));
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) position_ += speed_ * -orientation_;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) position_ += speed_ * glm::normalize(glm::cross(orientation_, up_));
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) position_ += speed_ * up_;
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) position_ += speed_ * -up_;
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) position_ += speed_ * up_;
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) position_ += speed_ * -up_;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) speed_ = 0.4f;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) speed_ = 0.1f;
 
