@@ -106,7 +106,7 @@ void PyramidProject::Activate() const
         vao.Bind();
         texture.Bind();
         glUniform1f(scale_uniform_ID, 1.0f);
-        glDrawElements(GL_TRIANGLES, sizeof(indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, sizeof(indexes) / sizeof(int), GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
