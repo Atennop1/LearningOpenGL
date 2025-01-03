@@ -37,11 +37,11 @@ void PyramidProject::Activate() const
 
     GLfloat vertices[] =
     {
-       -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-       -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-        0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-        0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-        0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,     0.5f, 1.0f,
+       -0.5f, -0.4f,  0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
+       -0.5f, -0.4f, -0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
+        0.5f, -0.4f, -0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
+        0.5f, -0.4f,  0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
+        0.0f,  0.4f,  0.0f,     0.92f, 0.86f, 0.76f,     0.5f, 1.0f,
     };
 
     GLuint indexes[] =
@@ -93,7 +93,7 @@ void PyramidProject::Activate() const
         glm::mat4 projection_matrix = glm::mat4(1.0f);
 
         model_matrix = glm::rotate(model_matrix, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        view_matrix = glm::translate(view_matrix, glm::vec3(0.0f, -0.5f, -2.0f));
+        view_matrix = glm::translate(view_matrix, glm::vec3(0.0f, 0.0f, -2.0f));
         projection_matrix = glm::perspective(glm::radians(45.0f), float(window_width) / float(window_height), 0.1f, 100.0f);
 
         GLint model_matrix_uniform_id = glGetUniformLocation(shader.GetID(), "model_matrix");

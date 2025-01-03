@@ -33,7 +33,10 @@ void SpaceProject::Activate() const
 
     glViewport(0, 0, 800, 800);
     glEnable(GL_DEPTH_TEST);
-    auto camera = Camera(window_width, window_height, glm::vec3(0.0f, 0.5f, 2.0f));
+
+    auto camera = Camera();
+    glfwSetWindowUserPointer(window, &camera);
+    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.5f, 2.0f));
 
     GLfloat pyramid_vertices[] =
     {
@@ -72,45 +75,6 @@ void SpaceProject::Activate() const
     pyramid_vbo.Unbind();
     pyramid_ebo.Unbind();
 
-    GLfloat light_vertices[] =
-    {
-       -0.1f, -0.1f,  0.1f,
-       -0.1f, -0.1f, -0.1f,
-        0.1f, -0.1f, -0.1f,
-        0.1f, -0.1f,  0.1f,
-       -0.1f,  0.1f,  0.1f,
-       -0.1f,  0.1f, -0.1f,
-        0.1f,  0.1f, -0.1f,
-        0.1f,  0.1f,  0.1f
-    };
-
-    GLuint light_indexes[] =
-    {
-        0, 1, 2,
-        0, 2, 3,
-        0, 4, 7,
-        0, 7, 3,
-        3, 7, 6,
-        3, 6, 2,
-        2, 6, 5,
-        2, 5, 1,
-        1, 5, 4,
-        1, 4, 0,
-        4, 5, 6,
-        4, 6, 7
-    };
-
-    auto light_vao = VAO();
-    auto light_vbo = VBO(light_vertices, sizeof (light_vertices));
-    auto light_ebo = EBO(light_indexes, sizeof (light_indexes));
-
-    light_vao.LinkAttributes(light_vbo, 0, 3, GL_FLOAT, 3 * sizeof (float), (void*)0);
-    auto light_shader = Shader("shaders/space/light.vert", "shaders/space/light.frag");
-
-    light_vao.Unbind();
-    light_vbo.Unbind();
-    light_ebo.Unbind();
-
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -119,8 +83,8 @@ void SpaceProject::Activate() const
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        camera.Inputs(window);
-        camera.SetMatrixInfo(45.0f, 0.1f, 100.0f);
+        camera.HandleInput(window);
+        camera.UpdateMatrix(0.1f, 100.0f);
 
         pyramid_vao.Bind();
         pyramid_texture.Bind();
@@ -128,11 +92,6 @@ void SpaceProject::Activate() const
         camera.DisplayMatrix(pyramid_shader, "camera_matrix");
         glUniform1f(pyramid_scale_uniform_ID, 1.0f);
         glDrawElements(GL_TRIANGLES, sizeof(pyramid_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
-
-        light_vao.Bind();
-        light_shader.Activate();
-        camera.DisplayMatrix(light_shader, "camera_matrix");
-        glDrawElements(GL_TRIANGLES, sizeof(light_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -143,11 +102,6 @@ void SpaceProject::Activate() const
     pyramid_ebo.Delete();
     pyramid_shader.Delete();
     pyramid_texture.Delete();
-
-    light_vao.Delete();
-    light_vbo.Delete();
-    light_ebo.Delete();
-    light_shader.Delete();
 
     glfwDestroyWindow(window);
     glfwTerminate();
