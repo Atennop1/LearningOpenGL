@@ -10,6 +10,7 @@ class Camera
 public:
     Camera() = default;
     void Initialize(GLFWwindow *window, int width, int height, glm::vec3 position);
+    [[nodiscard]] glm::vec3 GetPosition() const { return position_; }
 
     void UpdateMatrix(float near_plane, float far_plane);
     void DisplayMatrix(Shader &shader, const char *uniform);
