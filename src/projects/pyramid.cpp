@@ -1,4 +1,5 @@
 #include "projects/pyramid.hpp"
+#include "projects/pyramid_vertices.hpp"
 #include "system/shader.hpp"
 #include "system/vbo.hpp"
 #include "system/ebo.hpp"
@@ -35,25 +36,6 @@ void PyramidProject::Activate() const
     glViewport(0, 0, 800, 800);
     glEnable(GL_DEPTH_TEST);
 
-    GLfloat vertices[] =
-    {
-       -0.5f, -0.4f,  0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-       -0.5f, -0.4f, -0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-        0.5f, -0.4f, -0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-        0.5f, -0.4f,  0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-        0.0f,  0.4f,  0.0f,     0.92f, 0.86f, 0.76f,     0.5f, 1.0f,
-    };
-
-    GLuint indexes[] =
-    {
-        0, 1, 2,
-        0, 2, 3,
-        0, 1, 4,
-        1, 2, 4,
-        2, 3, 4,
-        3, 0, 4,
-    };
-
     auto shader = Shader("shaders/pyramid/pyramid.vert", "shaders/pyramid/pyramid.frag");
     GLint scale_uniform_ID = glGetUniformLocation(shader.GetID(), "scale");
 
@@ -61,10 +43,10 @@ void PyramidProject::Activate() const
     texture.Activate(shader, "tex0", 0);
 
     auto vao = VAO();
-    auto vbo = VBO(vertices, sizeof (vertices));
-    auto ebo = EBO(indexes, sizeof (indexes));
+    auto vbo = VBO(pyramid_vertices, sizeof (pyramid_vertices));
+    auto ebo = EBO(pyramid_indexes, sizeof (pyramid_indexes));
 
-    vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*)0);
+    vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*) nullptr);
     vao.LinkAttributes(vbo, 1, 3, GL_FLOAT, 8 * sizeof (float), (void*)(3 * sizeof (float)));
     vao.LinkAttributes(vbo, 2, 2, GL_FLOAT, 8 * sizeof (float), (void*)(6 * sizeof (float)));
 
@@ -106,7 +88,7 @@ void PyramidProject::Activate() const
         vao.Bind();
         texture.Bind();
         glUniform1f(scale_uniform_ID, 1.0f);
-        glDrawElements(GL_TRIANGLES, sizeof(indexes) / sizeof(int), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(pyramid_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

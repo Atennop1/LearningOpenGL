@@ -1,4 +1,5 @@
 #include "projects/space.hpp"
+#include "projects/space_vertices.hpp"
 #include "system/shader.hpp"
 #include "system/vbo.hpp"
 #include "system/ebo.hpp"
@@ -39,53 +40,6 @@ void SpaceProject::Activate() const
     glfwSetWindowUserPointer(window, &camera);
     camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.5f, 2.0f));
 
-    GLfloat pyramid_vertices[] =
-    {
-       -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-       -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-        0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-        0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-        0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,     0.5f, 1.0f,
-    };
-
-    GLuint pyramid_indexes[] =
-    {
-        0, 1, 2,
-        0, 2, 3,
-        0, 1, 4,
-        1, 2, 4,
-        2, 3, 4,
-        3, 0, 4,
-    };
-
-    GLfloat light_vertices[] =
-    {
-       -0.1f, -0.1f,  0.1f,
-       -0.1f, -0.1f, -0.1f,
-        0.1f, -0.1f, -0.1f,
-        0.1f, -0.1f,  0.1f,
-       -0.1f,  0.1f,  0.1f,
-       -0.1f,  0.1f, -0.1f,
-        0.1f,  0.1f, -0.1f,
-        0.1f,  0.1f,  0.1f
-    };
-
-    GLuint light_indexes[] =
-    {
-        0, 1, 2,
-        0, 2, 3,
-        0, 4, 7,
-        0, 7, 3,
-        3, 7, 6,
-        3, 6, 2,
-        2, 6, 5,
-        2, 5, 1,
-        1, 5, 4,
-        1, 4, 0,
-        4, 5, 6,
-        4, 6, 7
-    };
-
     auto pyramid_shader = Shader("shaders/space/space.vert", "shaders/space/space.frag");
     GLint pyramid_scale_uniform_ID = glGetUniformLocation(pyramid_shader.GetID(), "scale");
     GLint pyramid_model_matrix_uniform_ID = glGetUniformLocation(pyramid_shader.GetID(), "model_matrix");
@@ -94,8 +48,8 @@ void SpaceProject::Activate() const
     pyramid_texture.Activate(pyramid_shader, "tex0", 0);
 
     auto pyramid_vao = VAO();
-    auto pyramid_vbo = VBO(pyramid_vertices, sizeof (pyramid_vertices));
-    auto pyramid_ebo = EBO(pyramid_indexes, sizeof (pyramid_indexes));
+    auto pyramid_vbo = VBO(space_pyramid_vertices, sizeof (space_pyramid_vertices));
+    auto pyramid_ebo = EBO(space_pyramid_indexes, sizeof (space_pyramid_indexes));
 
     pyramid_vao.LinkAttributes(pyramid_vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*) nullptr);
     pyramid_vao.LinkAttributes(pyramid_vbo, 1, 3, GL_FLOAT, 8 * sizeof (float), (void*)(3 * sizeof (float)));
@@ -105,11 +59,9 @@ void SpaceProject::Activate() const
     pyramid_vbo.Unbind();
     pyramid_ebo.Unbind();
 
-
-
     auto light_vao = VAO();
-    auto light_vbo = VBO(light_vertices, sizeof (light_vertices));
-    auto light_ebo = EBO(light_indexes, sizeof (light_indexes));
+    auto light_vbo = VBO(space_light_vertices, sizeof (space_light_vertices));
+    auto light_ebo = EBO(space_light_indexes, sizeof (space_light_indexes));
 
     auto light_shader = Shader("shaders/space/lamp.vert", "shaders/space/lamp.frag");
     GLint light_model_matrix_uniform_ID = glGetUniformLocation(light_shader.GetID(), "model_matrix");
@@ -139,13 +91,13 @@ void SpaceProject::Activate() const
         glUniform1f(pyramid_scale_uniform_ID, 1.0f);
         camera.DisplayMatrix(pyramid_shader, "camera_matrix");
         glUniformMatrix4fv(pyramid_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-        glDrawElements(GL_TRIANGLES, sizeof(pyramid_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, sizeof(space_pyramid_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
 
         light_vao.Bind();
         light_shader.Activate();
         camera.DisplayMatrix(light_shader, "camera_matrix");
         glUniformMatrix4fv(light_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(light_model));
-        glDrawElements(GL_TRIANGLES, sizeof(light_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, sizeof(space_light_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

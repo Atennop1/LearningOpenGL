@@ -1,4 +1,5 @@
 #include "projects/triforce.hpp"
+#include "projects/triforce_vertices.hpp"
 #include "system/shader.hpp"
 #include "system/vbo.hpp"
 #include "system/ebo.hpp"
@@ -6,7 +7,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <cmath>
 
 void TriforceProject::Activate() const
 {
@@ -27,31 +27,14 @@ void TriforceProject::Activate() const
     gladLoadGL();
     glViewport(0, 0, 800, 800);
 
-    GLfloat vertices[] =
-    {
-       -0.5f, -0.5f * float(sqrt(3)) / 3,     0.0f,    0.8f, 0.3f,  0.02f,
-        0.5f, -0.5f * float(sqrt(3)) / 3,     0.0f,    0.8f, 0.3f,  0.02f,
-        0.0f,  0.5f * float(sqrt(3)) * 2 / 3, 0.0f,    1.0f, 0.6f,  0.32f,
-       -0.25f, 0.5f * float(sqrt(3)) / 6,     0.0f,    0.9f, 0.45f, 0.17f,
-        0.25f, 0.5f * float(sqrt(3)) / 6,     0.0f,    0.9f, 0.45f, 0.17f,
-        0.0f, -0.5f * float(sqrt(3)) / 3,     0.0f,    0.8f, 0.3f,  0.02f,
-    };
-
-    GLuint indexes[] =
-    {
-        0, 3, 5,
-        3, 2, 4,
-        5, 4, 1
-    };
-
     auto shader = Shader("shaders/triforce/triforce.vert", "shaders/triforce/triforce.frag");
     GLint scale_uniform_ID = glGetUniformLocation(shader.GetID(), "scale");
     auto vao = VAO();
     vao.Bind();
 
-    auto vbo = VBO(vertices, sizeof (vertices));
-    auto ebo = EBO(indexes, sizeof (indexes));
-    vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 6 * sizeof (float), (void*)0);
+    auto vbo = VBO(triforce_vertices, sizeof (triforce_vertices));
+    auto ebo = EBO(triforce_indexes, sizeof (triforce_indexes));
+    vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 6 * sizeof (float), (void*) nullptr);
     vao.LinkAttributes(vbo, 1, 3, GL_FLOAT, 6 * sizeof (float), (void*)(3 * sizeof (float)));
 
     vao.Unbind();
