@@ -17,7 +17,7 @@ void main()
 {
     current_position = vec3(model_matrix * vec4(aPos, 1.0f));
     gl_Position = camera_matrix * vec4(current_position, 1.0f);
-    color = aColor;
+    normal = mat3(transpose(inverse(model_matrix))) * aNormal;
     tex_coord = aTex;
-    normal = aNormal;
+    color = aColor;
 }

@@ -38,7 +38,7 @@ void SpaceProject::Activate() const
 
     auto camera = Camera();
     glfwSetWindowUserPointer(window, &camera);
-    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.5f, 2.0f));
+    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.5f, 3.0f));
 
     auto pyramid_shader = Shader("shaders/space/pyramid.vert", "shaders/space/pyramid.frag");
     GLint pyramid_scale_uniform_ID = glGetUniformLocation(pyramid_shader.GetID(), "scale");
@@ -68,14 +68,12 @@ void SpaceProject::Activate() const
     GLint lamp_light_color_uniform_ID = glGetUniformLocation(lamp_shader.GetID(), "light_color");
     lamp_vao.LinkAttributes(lamp_vbo, 0, 3, GL_FLOAT, 3 * sizeof (float), (void*)nullptr);
 
-    auto light_position = glm::vec3(0.5f, 0.5f, 0.5f);
-    auto light_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    auto light_model_matrix = glm::mat4(1.0f);
-    light_model_matrix = glm::translate(light_model_matrix, light_position);
-
     lamp_vao.Unbind();
     lamp_vbo.Unbind();
     lamp_ebo.Unbind();
+
+    float rotation = 0.0f;
+    double previous_time = glfwGetTime();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -88,12 +86,26 @@ void SpaceProject::Activate() const
         camera.HandleInput(window);
         camera.UpdateMatrix(0.1f, 100.0f);
 
+        auto light_color = glm::vec4(abs(sin(glfwGetTime())), abs(cos(glfwGetTime())), abs(sin(glfwGetTime())), 1.0f);
+        auto light_position = glm::vec3(0.75f * sin(glfwGetTime()), 0.4f, 0.75f * cos(glfwGetTime()));
+        auto light_model_matrix = glm::translate(glm::mat4(1.0f), light_position);
+
+        double current_time = glfwGetTime();
+        if (current_time - previous_time >= (1.0f / 60.0f))
+        {
+            rotation += 1.0f;
+            previous_time = current_time;
+        }
+
+        auto pyramid_model_matrix = glm::mat4(1.0f);
+        pyramid_model_matrix = glm::rotate(pyramid_model_matrix, glm::radians(-rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+
         pyramid_vao.Bind();
         pyramid_texture.Bind();
         pyramid_shader.Activate();
         camera.DisplayMatrix(pyramid_shader, "camera_matrix");
         glUniform1f(pyramid_scale_uniform_ID, 1.0f);
-        glUniformMatrix4fv(pyramid_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+        glUniformMatrix4fv(pyramid_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(pyramid_model_matrix));
         glUniform4f(pyramid_light_color_uniform_ID, light_color.x, light_color.y, light_color.z, light_color.w);
         glUniform3f(pyramid_light_position_uniform_ID, light_position.x, light_position.y, light_position.z);
         glUniform3f(pyramid_camera_position_uniform_ID, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
