@@ -47,14 +47,15 @@ void SpaceProject::Activate() const
 
     pyramid_shader.Activate();
     glUniform1f(glGetUniformLocation(pyramid_shader.GetID(), "scale"), 1.0f);
-    glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "material.ambient"), 1.0f, 1.0f, 1.0f);
-    glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "material.diffuse"), 1.0f, 1.0f, 1.0f);
-    glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "material.specular"), 0.5f, 0.5f, 0.5f);
     glUniform1f(glGetUniformLocation(pyramid_shader.GetID(), "material.shininess"), 32.0f);
     glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "light.specular"), 1.0f, 1.0f, 1.0f);
 
     auto pyramid_texture = Texture("media/space/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
     pyramid_texture.Activate(pyramid_shader, "tex0", 0);
+    pyramid_texture.Activate(pyramid_shader, "material.diffuse", 0);
+
+    auto pyramid_specular_texture = Texture("media/space/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    pyramid_specular_texture.Activate(pyramid_shader, "material.specular", 0);
 
     auto pyramid_vao = VAO();
     auto pyramid_vbo = VBO(space_pyramid_vertices, sizeof (space_pyramid_vertices));
@@ -92,7 +93,7 @@ void SpaceProject::Activate() const
         camera.HandleInput(window);
         camera.UpdateMatrix(0.1f, 100.0f);
 
-        auto light_color = glm::vec3(abs(sin(glfwGetTime())), abs(cos(glfwGetTime())), abs(sin(glfwGetTime())));
+        auto light_color = glm::vec3(sin(glfwGetTime() * 2.0f), abs(sin(glfwGetTime() * 0.7f)), sin(glfwGetTime() * 1.3f));
         auto light_ambient = light_color * glm::vec3(0.2f);
         auto light_diffuse = light_color * glm::vec3(0.5f);
         auto light_position = glm::vec3(0.75f * sin(glfwGetTime()), 0.4f, 0.75f * cos(glfwGetTime()));

@@ -6,25 +6,25 @@
 GLfloat space_pyramid_vertices[] =
 { //     COORDINATES    /        COLORS          /    TexCoord    /        NORMALS
    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-   -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     0.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-    0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     5.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	     5.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+   -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     0.0f, 3.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+    0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     5.0f, 3.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	     3.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
 
    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-   -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     5.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+   -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     3.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     1.5f, 3.0f,     -0.8f, 0.5f,  0.0f, // Left Side
 
-   -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     5.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+   -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     3.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     2.5f, 5.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     1.5f, 3.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
 
     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	     0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	     5.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     2.5f, 5.0f,      0.8f, 0.5f,  0.0f, // Right side
+    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	     3.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     1.5f, 3.0f,      0.8f, 0.5f,  0.0f, // Right side
 
-    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	     5.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+    0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	     3.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     2.5f, 5.0f,      0.0f, 0.5f,  0.8f  // Facing side
+    0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	     1.5f, 3.0f,      0.0f, 0.5f,  0.8f  // Facing side
 };
 
 GLuint space_pyramid_indexes[] =
