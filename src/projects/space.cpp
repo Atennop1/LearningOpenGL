@@ -50,12 +50,12 @@ void SpaceProject::Activate() const
     glUniform1f(glGetUniformLocation(pyramid_shader.GetID(), "material.shininess"), 32.0f);
     glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "light.specular"), 1.0f, 1.0f, 1.0f);
 
-    auto pyramid_texture = Texture("media/space/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    auto pyramid_texture = Texture("media/space/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
     pyramid_texture.Activate(pyramid_shader, "tex0", 0);
     pyramid_texture.Activate(pyramid_shader, "material.diffuse", 0);
 
-    auto pyramid_specular_texture = Texture("media/space/brick.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-    pyramid_specular_texture.Activate(pyramid_shader, "material.specular", 0);
+    auto pyramid_specular_texture = Texture("media/space/planks_specular.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
+    pyramid_specular_texture.Activate(pyramid_shader, "material.specular", 1);
 
     auto pyramid_vao = VAO();
     auto pyramid_vbo = VBO(space_pyramid_vertices, sizeof (space_pyramid_vertices));

@@ -1,15 +1,16 @@
 #include "system/texture.hpp"
 #include "stb/stb_image.h"
 
-Texture::Texture(const char *path, GLenum texture_type, GLenum slot, GLenum format, GLenum pixel_type)
+Texture::Texture(const char *path, GLenum texture_type, GLuint slot, GLenum format, GLenum pixel_type)
 {
     type_ = texture_type;
     int texture_width, texture_height, color_channels_number = 0;
     stbi_set_flip_vertically_on_load(true);
     unsigned char *bytes = stbi_load(path, &texture_width, &texture_height, &color_channels_number, 0);
 
+    unit_ = slot;
     glGenTextures(1, &id_);
-    glActiveTexture(slot);
+    glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(type_, id_);
 
     glTexParameteri(type_, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -24,15 +25,16 @@ Texture::Texture(const char *path, GLenum texture_type, GLenum slot, GLenum form
     glBindTexture(type_, 0);
 }
 
-void Texture::Activate(Shader &shader, const char *uniform_name, GLint texture_slot) const
+void Texture::Activate(Shader &shader, const char *uniform_name, GLint slot) const
 {
     GLint uniform_ID = glGetUniformLocation(shader.GetID(), uniform_name);
     shader.Activate();
-    glUniform1i(uniform_ID, texture_slot);
+    glUniform1i(uniform_ID, slot);
 }
 
 void Texture::Bind() const
 {
+    glActiveTexture(GL_TEXTURE0 + unit_);
     glBindTexture(type_, id_);
 }
 

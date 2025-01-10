@@ -17,6 +17,7 @@ public:
 
 private:
     GLuint id_{};
+    GLuint unit_{};
     GLenum type_{};
 };
 
