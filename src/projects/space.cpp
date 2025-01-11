@@ -38,33 +38,37 @@ void SpaceProject::Activate() const
 
     auto camera = Camera();
     glfwSetWindowUserPointer(window, &camera);
-    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.5f, 3.0f));
+    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.0f, 3.0f));
 
-    auto pyramid_shader = Shader("shaders/space/pyramid.vert", "shaders/space/pyramid.frag");
-    GLint pyramid_model_matrix_uniform_ID = glGetUniformLocation(pyramid_shader.GetID(), "model_matrix");
-    GLint pyramid_light_position_uniform_ID = glGetUniformLocation(pyramid_shader.GetID(), "light.position");
-    GLint pyramid_camera_position_uniform_ID = glGetUniformLocation(pyramid_shader.GetID(), "camera_position");
+    auto cube_shader = Shader("shaders/space/cube.vert", "shaders/space/cube.frag");
+    GLint cube_model_matrix_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "model_matrix");
+    GLint cube_light_position_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "light.position");
+    GLint cube_camera_position_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "camera_position");
 
-    pyramid_shader.Activate();
-    glUniform1f(glGetUniformLocation(pyramid_shader.GetID(), "scale"), 1.0f);
-    glUniform1f(glGetUniformLocation(pyramid_shader.GetID(), "material.shininess"), 32.0f);
-    glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "light.specular"), 1.0f, 1.0f, 1.0f);
+    cube_shader.Activate();
+    glUniform1f(glGetUniformLocation(cube_shader.GetID(), "scale"), 1.0f);
+    glUniform1f(glGetUniformLocation(cube_shader.GetID(), "material.shininess"), 64.0f);
+    glUniform3f(glGetUniformLocation(cube_shader.GetID(), "light.specular"), 1.0f, 1.0f, 1.0f);
+    glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.constant"), 1.0f);
+    glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.linear"), 0.09f);
+    glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.quadratic"), 0.032f);
 
-    auto pyramid_texture = Texture("media/space/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-    pyramid_texture.Activate(pyramid_shader, "tex0", 0);
-    pyramid_texture.Activate(pyramid_shader, "material.diffuse", 0);
+    auto cube_texture = Texture("media/space/container.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+    cube_texture.Activate(cube_shader, "tex0", 0);
+    cube_texture.Activate(cube_shader, "material.diffuse", 0);
+    cube_texture.Bind();
 
-    auto pyramid_specular_texture = Texture("media/space/planks_specular.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-    pyramid_specular_texture.Activate(pyramid_shader, "material.specular", 1);
+    auto cube_specular_texture = Texture("media/space/container_specular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+    cube_specular_texture.Activate(cube_shader, "material.specular", 1);
+    cube_specular_texture.Bind();
 
-    auto pyramid_vao = VAO();
-    auto pyramid_vbo = VBO(space_pyramid_vertices, sizeof (space_pyramid_vertices));
-    auto pyramid_ebo = EBO(space_pyramid_indexes, sizeof (space_pyramid_indexes));
+    auto cube_vao = VAO();
+    auto cube_vbo = VBO(space_cube_vertices, sizeof (space_cube_vertices));
+    auto cube_ebo = EBO(space_cube_indexes, sizeof (space_cube_indexes));
 
-    pyramid_vao.LinkAttributes(pyramid_vbo, 0, 3, GL_FLOAT, 11 * sizeof (float), (void*) nullptr);
-    pyramid_vao.LinkAttributes(pyramid_vbo, 1, 3, GL_FLOAT, 11 * sizeof (float), (void*)(3 * sizeof (float)));
-    pyramid_vao.LinkAttributes(pyramid_vbo, 2, 2, GL_FLOAT, 11 * sizeof (float), (void*)(6 * sizeof (float)));
-    pyramid_vao.LinkAttributes(pyramid_vbo, 3, 3, GL_FLOAT, 11 * sizeof (float), (void*)(8 * sizeof (float)));
+    cube_vao.LinkAttributes(cube_vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*) nullptr);
+    cube_vao.LinkAttributes(cube_vbo, 1, 3, GL_FLOAT, 8 * sizeof (float), (void*)(3 * sizeof (float)));
+    cube_vao.LinkAttributes(cube_vbo, 2, 2, GL_FLOAT, 8 * sizeof (float), (void*)(6 * sizeof (float)));
 
     auto lamp_vao = VAO();
     auto lamp_vbo = VBO(space_lamp_vertices, sizeof (space_lamp_vertices));
@@ -96,7 +100,7 @@ void SpaceProject::Activate() const
         auto light_color = glm::vec3(sin(glfwGetTime() * 2.0f), abs(sin(glfwGetTime() * 0.7f)), sin(glfwGetTime() * 1.3f));
         auto light_ambient = light_color * glm::vec3(0.2f);
         auto light_diffuse = light_color * glm::vec3(0.5f);
-        auto light_position = glm::vec3(0.75f * sin(glfwGetTime()), 0.4f, 0.75f * cos(glfwGetTime()));
+        auto light_position = glm::vec3(1.0f * sin(glfwGetTime()), 0.0f, 1.0f * cos(glfwGetTime()));
         auto light_model_matrix = glm::translate(glm::mat4(1.0f), light_position);
 
         double current_time = glfwGetTime();
@@ -106,19 +110,18 @@ void SpaceProject::Activate() const
             previous_time = current_time;
         }
 
-        auto pyramid_model_matrix = glm::mat4(1.0f);
-        pyramid_model_matrix = glm::rotate(pyramid_model_matrix, glm::radians(-rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        auto cube_model_matrix = glm::mat4(1.0f);
+        cube_model_matrix = glm::rotate(cube_model_matrix, glm::radians(-rotation), glm::vec3(1.0f, 0.0f, 0.0f));
 
-        pyramid_vao.Bind();
-        pyramid_texture.Bind();
-        pyramid_shader.Activate();
-        camera.DisplayMatrix(pyramid_shader, "camera_matrix");
-        glUniformMatrix4fv(pyramid_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(pyramid_model_matrix));
-        glUniform3f(pyramid_light_position_uniform_ID, light_position.x, light_position.y, light_position.z);
-        glUniform3f(pyramid_camera_position_uniform_ID, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
-        glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "light.ambient"), light_ambient.x, light_ambient.y, light_ambient.z);
-        glUniform3f(glGetUniformLocation(pyramid_shader.GetID(), "light.diffuse"), light_diffuse.x, light_diffuse.y, light_diffuse.z);
-        glDrawElements(GL_TRIANGLES, sizeof(space_pyramid_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
+        cube_vao.Bind();
+        cube_shader.Activate();
+        camera.DisplayMatrix(cube_shader, "camera_matrix");
+        glUniformMatrix4fv(cube_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(cube_model_matrix));
+        glUniform3f(cube_light_position_uniform_ID, light_position.x, light_position.y, light_position.z);
+        glUniform3f(cube_camera_position_uniform_ID, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+        glUniform3f(glGetUniformLocation(cube_shader.GetID(), "light.ambient"), light_ambient.x, light_ambient.y, light_ambient.z);
+        glUniform3f(glGetUniformLocation(cube_shader.GetID(), "light.diffuse"), light_diffuse.x, light_diffuse.y, light_diffuse.z);
+        glDrawElements(GL_TRIANGLES, sizeof(space_cube_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
 
         lamp_vao.Bind();
         lamp_shader.Activate();
@@ -131,11 +134,11 @@ void SpaceProject::Activate() const
         glfwPollEvents();
     }
 
-    pyramid_vao.Delete();
-    pyramid_vbo.Delete();
-    pyramid_ebo.Delete();
-    pyramid_shader.Delete();
-    pyramid_texture.Delete();
+    cube_vao.Delete();
+    cube_vbo.Delete();
+    cube_ebo.Delete();
+    cube_shader.Delete();
+    cube_texture.Delete();
 
     lamp_vao.Delete();
     lamp_vbo.Delete();
