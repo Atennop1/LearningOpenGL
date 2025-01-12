@@ -2729,7 +2729,7 @@ GLFWAPI void glfwGetMonitorContentScale(GLFWmonitor* monitor, float* xscale, flo
 /*! @brief Returns the name of the specified monitor.
  *
  *  This function returns a human-readable name, encoded as UTF-8, of the
- *  specified monitor.  The name typically reflects the make and model of the
+ *  specified monitor.  The name typically reflects the make and ModelProject of the
  *  monitor and is not guaranteed to be unique among the connected monitors.
  *
  *  @param[in] monitor The monitor to query.
@@ -5652,7 +5652,7 @@ GLFWAPI const char* glfwGetJoystickName(int jid);
  *  @ref glfwJoystickPresent.
  *
  *  The GUID uses the format introduced in SDL 2.0.5.  This GUID tries to
- *  uniquely identify the make and model of a joystick but does not identify
+ *  uniquely identify the make and ModelProject of a joystick but does not identify
  *  a specific unit, e.g. all wired Xbox 360 controllers will have the same
  *  GUID on that platform.  The GUID for a unit may vary between platforms
  *  depending on what hardware information the platform specific APIs provide.

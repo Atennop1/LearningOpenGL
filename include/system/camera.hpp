@@ -13,7 +13,7 @@ public:
     [[nodiscard]] glm::vec3 GetPosition() const { return position_; }
 
     void UpdateMatrix(float near_plane, float far_plane);
-    void DisplayMatrix(Shader &shader, const char *uniform);
+    void DisplayMatrix(const Shader &shader, const char *uniform);
     void HandleInput(GLFWwindow *window);
 
 private:

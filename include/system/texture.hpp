@@ -10,7 +10,7 @@ public:
     Texture(const char *path, GLenum texture_type, GLenum slot, GLenum format, GLenum pixel_type);
     [[nodiscard]] GLuint GetID() const { return id_; }
 
-    void Activate(Shader &shader, const char *uniform_name, GLint texture_slot) const;
+    void Activate(const Shader &shader, const char *uniform_name, GLint texture_slot) const;
     void Bind() const;
     void Unbind() const;
     void Delete() const;

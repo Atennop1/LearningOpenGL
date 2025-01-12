@@ -1,12 +1,13 @@
 #ifndef LEARNINGOPENGL_INCLUDE_EBO_HPP_
 #define LEARNINGOPENGL_INCLUDE_EBO_HPP_
 
-#include "glad/glad.h"
+#include <glad/glad.h>
+#include <vector>
 
 class EBO
 {
 public:
-    EBO(GLuint *indexes, GLsizeiptr size);
+    explicit EBO(const std::vector<GLuint> &indexes);
     [[nodiscard]] GLuint GetID() const { return id_; }
 
     void Bind() const;

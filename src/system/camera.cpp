@@ -25,7 +25,7 @@ void Camera::UpdateMatrix(float near_plane, float far_plane)
     camera_matrix = projection_matrix * view_matrix;
 }
 
-void Camera::DisplayMatrix(Shader &shader, const char *uniform)
+void Camera::DisplayMatrix(const Shader &shader, const char *uniform)
 {
     glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), uniform), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 }

@@ -96,7 +96,7 @@
 #define GLM_COMPILER_CLANG41		0x200000C0
 #define GLM_COMPILER_CLANG42		0x200000D0
 
-// Build model
+// Build ModelProject
 #define GLM_MODEL_32				0x00000010
 #define GLM_MODEL_64				0x00000020
 

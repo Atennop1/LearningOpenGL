@@ -12,15 +12,18 @@ Shader::Shader(const char *vertex_source_file, const char *fragment_source_file)
     GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_source, nullptr);
     glCompileShader(vertex_shader);
+    CompileShaderErrors(vertex_shader, "VERTEX");
 
     GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &fragment_source, nullptr);
     glCompileShader(fragment_shader);
+    CompileShaderErrors(fragment_shader, "FRAGMENT");
 
     id_ = glCreateProgram();
     glAttachShader(id_, vertex_shader);
     glAttachShader(id_, fragment_shader);
     glLinkProgram(id_);
+    CompileShaderErrors(id_, "PROGRAM");
 
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);

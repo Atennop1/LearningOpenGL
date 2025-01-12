@@ -1,12 +1,14 @@
 #ifndef LEARNINGOPENGL_INCLUDE_VBO_HPP_
 #define LEARNINGOPENGL_INCLUDE_VBO_HPP_
 
-#include "glad/glad.h"
+#include "vertex.hpp"
+#include <glad/glad.h>
+#include <vector>
 
 class VBO
 {
 public:
-    VBO(GLfloat *vertices, GLsizeiptr size);
+    explicit VBO(const std::vector<Vertex> &vertices);
     [[nodiscard]] GLuint GetID() const { return id_; }
 
     void Bind() const;

@@ -1,8 +1,8 @@
-#include "projects/space.hpp"
+#include "projects/model.hpp"
 
 int main()
 {
-    auto space = SpaceProject();
+    auto space = ModelProject();
     space.Activate();
     return 0;
 }
