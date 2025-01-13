@@ -32,10 +32,11 @@ void TriforceProject::Activate() const
     auto vao = VAO();
     vao.Bind();
 
-    auto vbo = VBO(triforce_vertices, sizeof (triforce_vertices));
-    auto ebo = EBO(triforce_indexes, sizeof (triforce_indexes));
-    vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 6 * sizeof (float), (void*) nullptr);
-    vao.LinkAttributes(vbo, 1, 3, GL_FLOAT, 6 * sizeof (float), (void*)(3 * sizeof (float)));
+    auto vbo = VBO(triforce_vertices);
+    auto ebo = EBO(triforce_indexes);
+    vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*) nullptr);
+    vao.LinkAttributes(vbo, 1, 3, GL_FLOAT, 8 * sizeof (float), (void*)(3 * sizeof (float)));
+    vao.LinkAttributes(vbo, 2, 2, GL_FLOAT, 8 * sizeof (float), (void*)(6 * sizeof (float)));
 
     vao.Unbind();
     vbo.Unbind();

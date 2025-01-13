@@ -1,11 +1,7 @@
 #include "projects/model.hpp"
 #include "projects/model_vertices.hpp"
-#include "system/shader.hpp"
-#include "stb/stb_image.h"
-#include "system/texture.hpp"
-#include "system/camera.hpp"
-#include "glm/gtc/type_ptr.hpp"
 #include "system/mesh.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -49,6 +45,8 @@ void ModelProject::Activate() const
     GLint cube_model_matrix_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "model_matrix");
     GLint cube_light_position_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "light.position");
     GLint cube_camera_position_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "camera_position");
+    GLint cube_light_ambient_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "light.ambient");
+    GLint cube_light_diffuse_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "light.diffuse");
 
     cube_shader.Activate();
     glUniform1f(glGetUniformLocation(cube_shader.GetID(), "material.shininess"), 64.0f);
@@ -57,7 +55,7 @@ void ModelProject::Activate() const
     glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.linear"), 0.09f);
     glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.quadratic"), 0.032f);
 
-    auto lamp_mesh = Mesh(model_lamp_vertices, model_lamp_indexes, /*placeholder*/ cube_textures);
+    auto lamp_mesh = Mesh(model_lamp_vertices, model_lamp_indexes, cube_textures);
     auto lamp_shader = Shader("shaders/model/lamp.vert", "shaders/model/lamp.frag");
     GLint lamp_model_matrix_uniform_ID = glGetUniformLocation(lamp_shader.GetID(), "model_matrix");
     GLint lamp_light_color_uniform_ID = glGetUniformLocation(lamp_shader.GetID(), "light_color");
@@ -76,12 +74,6 @@ void ModelProject::Activate() const
         camera.HandleInput(window);
         camera.UpdateMatrix(0.1f, 100.0f);
 
-        auto light_color = glm::vec3(sin(glfwGetTime() * 2.0f), abs(sin(glfwGetTime() * 0.7f)), sin(glfwGetTime() * 1.3f));
-        auto light_ambient = light_color * glm::vec3(0.2f);
-        auto light_diffuse = light_color * glm::vec3(0.5f);
-        auto light_position = glm::vec3(1.0f * sin(glfwGetTime()), 0.0f, 1.0f * cos(glfwGetTime()));
-        auto light_model_matrix = glm::translate(glm::mat4(1.0f), light_position);
-
         double current_time = glfwGetTime();
         if (current_time - previous_time >= (1.0f / 60.0f))
         {
@@ -92,15 +84,23 @@ void ModelProject::Activate() const
         auto cube_model_matrix = glm::mat4(1.0f);
         cube_model_matrix = glm::rotate(cube_model_matrix, glm::radians(-rotation), glm::vec3(1.0f, 0.0f, 0.0f));
 
-        glUniformMatrix4fv(cube_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(cube_model_matrix));
-        glUniform3f(cube_light_position_uniform_ID, light_position.x, light_position.y, light_position.z);
+        auto light_color = glm::vec3(sin(glfwGetTime() * 2.0f), abs(sin(glfwGetTime() * 0.7f)), sin(glfwGetTime() * 1.3f));
+        auto light_ambient = light_color * glm::vec3(0.2f);
+        auto light_diffuse = light_color * glm::vec3(0.5f);
+        auto light_position = glm::vec3(1.0f * sin(glfwGetTime()), 0.0f, 1.0f * cos(glfwGetTime()));
+        auto light_model_matrix = glm::translate(glm::mat4(1.0f), light_position);
+
+        cube_shader.Activate();
         glUniform3f(cube_camera_position_uniform_ID, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
-        glUniform3f(glGetUniformLocation(cube_shader.GetID(), "light.ambient"), light_ambient.x, light_ambient.y, light_ambient.z);
-        glUniform3f(glGetUniformLocation(cube_shader.GetID(), "light.diffuse"), light_diffuse.x, light_diffuse.y, light_diffuse.z);
+        glUniform3f(cube_light_position_uniform_ID, light_position.x, light_position.y, light_position.z);
+        glUniform3f(cube_light_ambient_uniform_ID, light_ambient.x, light_ambient.y, light_ambient.z);
+        glUniform3f(cube_light_diffuse_uniform_ID, light_diffuse.x, light_diffuse.y, light_diffuse.z);
+        glUniformMatrix4fv(cube_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(cube_model_matrix));
         cube_mesh.Draw(cube_shader, camera);
 
-        glUniformMatrix4fv(lamp_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(light_model_matrix));
+        lamp_shader.Activate();
         glUniform3f(lamp_light_color_uniform_ID, light_color.x, light_color.y, light_color.z);
+        glUniformMatrix4fv(lamp_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(light_model_matrix));
         lamp_mesh.Draw(lamp_shader, camera);
 
         glfwSwapBuffers(window);

@@ -15,16 +15,16 @@ add_executable(LearningOpenGL
         include/system/ebo.hpp
         src/system/vao.cpp
         include/system/vao.hpp
-      #  include/projects/triforce.hpp
-     #   src/projects/triforce.cpp
-   #     src/projects/pyramid.cpp
-       # include/projects/pyramid.hpp
+        include/projects/triforce.hpp
+        src/projects/triforce.cpp
+        src/projects/pyramid.cpp
+        include/projects/pyramid.hpp
         src/system/texture.cpp
         include/system/texture.hpp
         src/system/camera.cpp
         include/system/camera.hpp
-    #    src/projects/space.cpp
-       # include/projects/space.hpp
+        src/projects/space.cpp
+        include/projects/space.hpp
         include/projects/pyramid_vertices.hpp
         include/projects/triforce_vertices.hpp
         include/projects/space_vertices.hpp

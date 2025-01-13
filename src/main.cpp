@@ -2,7 +2,7 @@
 
 int main()
 {
-    auto space = ModelProject();
-    space.Activate();
+    auto model = ModelProject();
+    model.Activate();
     return 0;
 }

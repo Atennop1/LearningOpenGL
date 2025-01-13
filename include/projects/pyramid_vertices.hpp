@@ -1,18 +1,20 @@
 #ifndef LEARNINGOPENGL_INCLUDE_PROJECTS_PYRAMID_VERTICES_HPP_
 #define LEARNINGOPENGL_INCLUDE_PROJECTS_PYRAMID_VERTICES_HPP_
 
+#include "system/vertex.hpp"
 #include <glad/glad.h>
+#include <vector>
 
-GLfloat pyramid_vertices[] =
+std::vector<Vertex> pyramid_vertices =
 {
-    -0.5f, -0.4f,  0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-    -0.5f, -0.4f, -0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-    0.5f, -0.4f, -0.5f,     0.83f, 0.70f, 0.44f,     0.0f, 0.0f,
-    0.5f, -0.4f,  0.5f,     0.83f, 0.70f, 0.44f,     1.0f, 0.0f,
-    0.0f,  0.4f,  0.0f,     0.92f, 0.86f, 0.76f,     0.5f, 1.0f,
+   { glm::vec3(-0.5f, -0.4f,  0.5f),     glm::vec3(0.00f, 0.00f, 0.00f),     glm::vec2(0.0f, 0.0f) },
+   { glm::vec3(-0.5f, -0.4f, -0.5f),     glm::vec3(0.00f, 0.00f, 0.00f),     glm::vec2(1.0f, 0.0f) },
+   { glm::vec3( 0.5f, -0.4f, -0.5f),     glm::vec3(0.00f, 0.00f, 0.00f),     glm::vec2(0.0f, 0.0f) },
+   { glm::vec3( 0.5f, -0.4f,  0.5f),     glm::vec3(0.00f, 0.00f, 0.00f),     glm::vec2(1.0f, 0.0f) },
+   { glm::vec3( 0.0f,  0.4f,  0.0f),     glm::vec3(0.00f, 0.00f, 0.00f),     glm::vec2(0.5f, 1.0f) },
 };
 
-GLuint pyramid_indexes[] =
+std::vector<GLuint> pyramid_indexes =
 {
     0, 1, 2,
     0, 2, 3,

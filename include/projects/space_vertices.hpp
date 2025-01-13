@@ -1,42 +1,44 @@
 #ifndef LEARNINGOPENGL_INCLUDE_PROJECTS_SPACE_VERTICES_HPP_
 #define LEARNINGOPENGL_INCLUDE_PROJECTS_SPACE_VERTICES_HPP_
 
+#include "system/vertex.hpp"
 #include <glad/glad.h>
+#include <vector>
 
-GLfloat space_cube_vertices[] =
-{ // positions          //        normals       //   texture coords
-   -0.4f, -0.4f, -0.4f,     0.0f,  0.0f, -1.0f,     0.0f,  0.0f,
-    0.4f, -0.4f, -0.4f,     0.0f,  0.0f, -1.0f,     1.0f,  0.0f,
-    0.4f,  0.4f, -0.4f,     0.0f,  0.0f, -1.0f,     1.0f,  1.0f,
-   -0.4f,  0.4f, -0.4f,     0.0f,  0.0f, -1.0f,     0.0f,  1.0f,
+std::vector<Vertex> space_cube_vertices =
+{
+   { glm::vec3(-0.4f, -0.4f, -0.4f),    glm::vec3( 0.0f,  0.0f, -1.0f),     glm::vec2(0.0f,  0.0f) },
+   { glm::vec3( 0.4f, -0.4f, -0.4f),    glm::vec3( 0.0f,  0.0f, -1.0f),     glm::vec2(1.0f,  0.0f) },
+   { glm::vec3( 0.4f,  0.4f, -0.4f),    glm::vec3( 0.0f,  0.0f, -1.0f),     glm::vec2(1.0f,  1.0f) },
+   { glm::vec3(-0.4f,  0.4f, -0.4f),    glm::vec3( 0.0f,  0.0f, -1.0f),     glm::vec2(0.0f,  1.0f) },
 
-   -0.4f, -0.4f,  0.4f,     0.0f,  0.0f,  1.0f,     0.0f,  0.0f,
-    0.4f, -0.4f,  0.4f,     0.0f,  0.0f,  1.0f,     1.0f,  0.0f,
-    0.4f,  0.4f,  0.4f,     0.0f,  0.0f,  1.0f,     1.0f,  1.0f,
-   -0.4f,  0.4f,  0.4f,     0.0f,  0.0f,  1.0f,     0.0f,  1.0f,
+   { glm::vec3(-0.4f, -0.4f,  0.4f),    glm::vec3( 0.0f,  0.0f,  1.0f),     glm::vec2(0.0f,  0.0f) },
+   { glm::vec3( 0.4f, -0.4f,  0.4f),    glm::vec3( 0.0f,  0.0f,  1.0f),     glm::vec2(1.0f,  0.0f) },
+   { glm::vec3( 0.4f,  0.4f,  0.4f),    glm::vec3( 0.0f,  0.0f,  1.0f),     glm::vec2(1.0f,  1.0f) },
+   { glm::vec3(-0.4f,  0.4f,  0.4f),    glm::vec3( 0.0f,  0.0f,  1.0f),     glm::vec2(0.0f,  1.0f) },
 
-   -0.4f,  0.4f,  0.4f,    -1.0f,  0.0f,  0.0f,     1.0f,  0.0f,
-   -0.4f,  0.4f, -0.4f,    -1.0f,  0.0f,  0.0f,     1.0f,  1.0f,
-   -0.4f, -0.4f, -0.4f,    -1.0f,  0.0f,  0.0f,     0.0f,  1.0f,
-   -0.4f, -0.4f,  0.4f,    -1.0f,  0.0f,  0.0f,     0.0f,  0.0f,
+   { glm::vec3(-0.4f,  0.4f,  0.4f),    glm::vec3(-1.0f,  0.0f,  0.0f),     glm::vec2(1.0f,  0.0f) },
+   { glm::vec3(-0.4f,  0.4f, -0.4f),    glm::vec3(-1.0f,  0.0f,  0.0f),     glm::vec2(1.0f,  1.0f) },
+   { glm::vec3(-0.4f, -0.4f, -0.4f),    glm::vec3(-1.0f,  0.0f,  0.0f),     glm::vec2(0.0f,  1.0f) },
+   { glm::vec3(-0.4f, -0.4f,  0.4f),    glm::vec3(-1.0f,  0.0f,  0.0f),     glm::vec2(0.0f,  0.0f) },
 
-    0.4f,  0.4f,  0.4f,     1.0f,  0.0f,  0.0f,     1.0f,  0.0f,
-    0.4f,  0.4f, -0.4f,     1.0f,  0.0f,  0.0f,     1.0f,  1.0f,
-    0.4f, -0.4f, -0.4f,     1.0f,  0.0f,  0.0f,     0.0f,  1.0f,
-    0.4f, -0.4f,  0.4f,     1.0f,  0.0f,  0.0f,     0.0f,  0.0f,
+   { glm::vec3( 0.4f,  0.4f,  0.4f),    glm::vec3( 1.0f,  0.0f,  0.0f),     glm::vec2(1.0f,  0.0f) },
+   { glm::vec3( 0.4f,  0.4f, -0.4f),    glm::vec3( 1.0f,  0.0f,  0.0f),     glm::vec2(1.0f,  1.0f) },
+   { glm::vec3( 0.4f, -0.4f, -0.4f),    glm::vec3( 1.0f,  0.0f,  0.0f),     glm::vec2(0.0f,  1.0f) },
+   { glm::vec3( 0.4f, -0.4f,  0.4f),    glm::vec3( 1.0f,  0.0f,  0.0f),     glm::vec2(0.0f,  0.0f) },
 
-   -0.4f, -0.4f, -0.4f,     0.0f, -1.0f,  0.0f,     0.0f,  1.0f,
-    0.4f, -0.4f, -0.4f,     0.0f, -1.0f,  0.0f,     1.0f,  1.0f,
-    0.4f, -0.4f,  0.4f,     0.0f, -1.0f,  0.0f,     1.0f,  0.0f,
-   -0.4f, -0.4f,  0.4f,     0.0f, -1.0f,  0.0f,     0.0f,  0.0f,
+   { glm::vec3(-0.4f, -0.4f, -0.4f),    glm::vec3( 0.0f, -1.0f,  0.0f),     glm::vec2(0.0f,  1.0f) },
+   { glm::vec3( 0.4f, -0.4f, -0.4f),    glm::vec3( 0.0f, -1.0f,  0.0f),     glm::vec2(1.0f,  1.0f) },
+   { glm::vec3( 0.4f, -0.4f,  0.4f),    glm::vec3( 0.0f, -1.0f,  0.0f),     glm::vec2(1.0f,  0.0f) },
+   { glm::vec3(-0.4f, -0.4f,  0.4f),    glm::vec3( 0.0f, -1.0f,  0.0f),     glm::vec2(0.0f,  0.0f) },
 
-   -0.4f,  0.4f, -0.4f,     0.0f,  1.0f,  0.0f,     0.0f,  1.0f,
-    0.4f,  0.4f, -0.4f,     0.0f,  1.0f,  0.0f,     1.0f,  1.0f,
-    0.4f,  0.4f,  0.4f,     0.0f,  1.0f,  0.0f,     1.0f,  0.0f,
-   -0.4f,  0.4f,  0.4f,     0.0f,  1.0f,  0.0f,     0.0f,  0.0f,
+   { glm::vec3(-0.4f,  0.4f, -0.4f),    glm::vec3( 0.0f,  1.0f,  0.0f),     glm::vec2(0.0f,  1.0f) },
+   { glm::vec3( 0.4f,  0.4f, -0.4f),    glm::vec3( 0.0f,  1.0f,  0.0f),     glm::vec2(1.0f,  1.0f) },
+   { glm::vec3( 0.4f,  0.4f,  0.4f),    glm::vec3( 0.0f,  1.0f,  0.0f),     glm::vec2(1.0f,  0.0f) },
+   { glm::vec3(-0.4f,  0.4f,  0.4f),    glm::vec3( 0.0f,  1.0f,  0.0f),     glm::vec2(0.0f,  0.0f) },
 };
 
-GLuint space_cube_indexes[] =
+std::vector<GLuint> space_cube_indexes =
 {
     0, 1, 2,
     2, 3, 0,
@@ -52,19 +54,19 @@ GLuint space_cube_indexes[] =
     22, 23, 20,
 };
 
-GLfloat space_lamp_vertices[] =
+std::vector<Vertex> space_lamp_vertices =
 {
-   -0.1f, -0.1f,  0.1f,
-   -0.1f, -0.1f, -0.1f,
-    0.1f, -0.1f, -0.1f,
-    0.1f, -0.1f,  0.1f,
-   -0.1f,  0.1f,  0.1f,
-   -0.1f,  0.1f, -0.1f,
-    0.1f,  0.1f, -0.1f,
-    0.1f,  0.1f,  0.1f
+    { glm::vec3(-0.1f, -0.1f,  0.1f) },
+    { glm::vec3(-0.1f, -0.1f, -0.1f) },
+    { glm::vec3( 0.1f, -0.1f, -0.1f) },
+    { glm::vec3( 0.1f, -0.1f,  0.1f) },
+    { glm::vec3(-0.1f,  0.1f,  0.1f) },
+    { glm::vec3(-0.1f,  0.1f, -0.1f) },
+    { glm::vec3( 0.1f,  0.1f, -0.1f) },
+    { glm::vec3( 0.1f,  0.1f,  0.1f) },
 };
 
-GLuint space_lamp_indexes[] =
+std::vector<GLuint> space_lamp_indexes =
 {
     0, 1, 2,
     0, 2, 3,

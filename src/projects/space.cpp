@@ -62,21 +62,23 @@ void SpaceProject::Activate() const
     cube_specular_texture.Bind();
 
     auto cube_vao = VAO();
-    auto cube_vbo = VBO(space_cube_vertices, sizeof (space_cube_vertices));
-    auto cube_ebo = EBO(space_cube_indexes, sizeof (space_cube_indexes));
+    auto cube_vbo = VBO(space_cube_vertices);
+    auto cube_ebo = EBO(space_cube_indexes);
 
     cube_vao.LinkAttributes(cube_vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*) nullptr);
     cube_vao.LinkAttributes(cube_vbo, 1, 3, GL_FLOAT, 8 * sizeof (float), (void*)(3 * sizeof (float)));
     cube_vao.LinkAttributes(cube_vbo, 2, 2, GL_FLOAT, 8 * sizeof (float), (void*)(6 * sizeof (float)));
 
     auto lamp_vao = VAO();
-    auto lamp_vbo = VBO(space_lamp_vertices, sizeof (space_lamp_vertices));
-    auto lamp_ebo = EBO(space_lamp_indexes, sizeof (space_lamp_indexes));
+    auto lamp_vbo = VBO(space_lamp_vertices);
+    auto lamp_ebo = EBO(space_lamp_indexes);
 
     auto lamp_shader = Shader("shaders/space/lamp.vert", "shaders/space/lamp.frag");
     GLint lamp_model_matrix_uniform_ID = glGetUniformLocation(lamp_shader.GetID(), "model_matrix");
     GLint lamp_light_color_uniform_ID = glGetUniformLocation(lamp_shader.GetID(), "light_color");
-    lamp_vao.LinkAttributes(lamp_vbo, 0, 3, GL_FLOAT, 3 * sizeof (float), (void*)nullptr);
+    lamp_vao.LinkAttributes(lamp_vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*)nullptr);
+    lamp_vao.LinkAttributes(lamp_vbo, 1, 3, GL_FLOAT, 8 * sizeof (float), (void*)(3 * sizeof (float)));
+    lamp_vao.LinkAttributes(lamp_vbo, 2, 2, GL_FLOAT, 8 * sizeof (float), (void*)(6 * sizeof (float)));
 
     lamp_vao.Unbind();
     lamp_vbo.Unbind();
@@ -120,14 +122,14 @@ void SpaceProject::Activate() const
         glUniform3f(cube_camera_position_uniform_ID, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
         glUniform3f(glGetUniformLocation(cube_shader.GetID(), "light.ambient"), light_ambient.x, light_ambient.y, light_ambient.z);
         glUniform3f(glGetUniformLocation(cube_shader.GetID(), "light.diffuse"), light_diffuse.x, light_diffuse.y, light_diffuse.z);
-        glDrawElements(GL_TRIANGLES, sizeof(space_cube_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (GLsizei)space_cube_indexes.size(), GL_UNSIGNED_INT, nullptr);
 
         lamp_vao.Bind();
         lamp_shader.Activate();
         camera.DisplayMatrix(lamp_shader, "camera_matrix");
         glUniformMatrix4fv(lamp_model_matrix_uniform_ID, 1, GL_FALSE, glm::value_ptr(light_model_matrix));
         glUniform3f(lamp_light_color_uniform_ID, light_color.x, light_color.y, light_color.z);
-        glDrawElements(GL_TRIANGLES, sizeof(space_lamp_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (GLsizei)space_lamp_indexes.size(), GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

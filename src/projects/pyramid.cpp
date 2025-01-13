@@ -43,8 +43,8 @@ void PyramidProject::Activate() const
     texture.Activate(shader, "tex0", 0);
 
     auto vao = VAO();
-    auto vbo = VBO(pyramid_vertices, sizeof (pyramid_vertices));
-    auto ebo = EBO(pyramid_indexes, sizeof (pyramid_indexes));
+    auto vbo = VBO(pyramid_vertices);
+    auto ebo = EBO(pyramid_indexes);
 
     vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 8 * sizeof (float), (void*) nullptr);
     vao.LinkAttributes(vbo, 1, 3, GL_FLOAT, 8 * sizeof (float), (void*)(3 * sizeof (float)));
@@ -88,7 +88,7 @@ void PyramidProject::Activate() const
         vao.Bind();
         texture.Bind();
         glUniform1f(scale_uniform_ID, 1.0f);
-        glDrawElements(GL_TRIANGLES, sizeof(pyramid_indexes) / sizeof(int), GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (GLsizei)pyramid_indexes.size(), GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
