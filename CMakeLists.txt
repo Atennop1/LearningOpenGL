@@ -6,6 +6,7 @@ add_executable(LearningOpenGL
         src/main.cpp
         libs/lib/glad/glad.c
         libs/lib/stb/std_image.c
+        libs/include/json/json.hpp
         src/system/shader.cpp
         include/system/shader.hpp
         include/system/utils.hpp
