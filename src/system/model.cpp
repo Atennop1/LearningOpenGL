@@ -193,8 +193,8 @@ std::vector<glm::vec2> Model::GroupFloatsInVec2(std::vector<float> floats)
 {
     std::vector<glm::vec2> vectors = {};
 
-    for (int i = 0; i < floats.size(); i)
-        vectors.emplace_back(floats[i++], floats[i++]);
+    for (int i = 0; i < floats.size(); i += 2)
+        vectors.emplace_back(floats[i], floats[i + 1]);
 
     return vectors;
 }
@@ -203,8 +203,8 @@ std::vector<glm::vec3> Model::GroupFloatsInVec3(std::vector<float> floats)
 {
     std::vector<glm::vec3> vectors = {};
 
-    for (int i = 0; i < floats.size(); i)
-        vectors.emplace_back(floats[i++], floats[i++], floats[i++]);
+    for (int i = 0; i < floats.size(); i += 3)
+        vectors.emplace_back(floats[i], floats[i + 1], floats[i + 2]);
 
     return vectors;
 }
@@ -213,8 +213,8 @@ std::vector<glm::vec4> Model::GroupFloatsInVec4(std::vector<float> floats)
 {
     std::vector<glm::vec4> vectors = {};
 
-    for (int i = 0; i < floats.size(); i)
-        vectors.emplace_back(floats[i++], floats[i++], floats[i++], floats[i++]);
+    for (int i = 0; i < floats.size(); i += 4)
+        vectors.emplace_back(floats[i], floats[i + 1], floats[i + 2], floats[i + 3]);
 
     return vectors;
 }

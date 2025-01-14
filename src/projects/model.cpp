@@ -36,12 +36,9 @@ void ModelProject::Activate() const
     auto model = Model("media/model/scene.gltf");
     shader.Activate();
 
-    glUniform1f(glGetUniformLocation(shader.GetID(), "light.constant"), 1.0f);
-    glUniform1f(glGetUniformLocation(shader.GetID(), "light.linear"), 0.09f);
-    glUniform1f(glGetUniformLocation(shader.GetID(), "light.quadratic"), 0.032f);
     glUniform3f(glGetUniformLocation(shader.GetID(), "light.ambient"), 0.2f, 0.2f, 0.2f);
     glUniform3f(glGetUniformLocation(shader.GetID(), "light.diffuse"), 0.5f, 0.5f, 0.5f);
-    glUniform3f(glGetUniformLocation(shader.GetID(), "light.position"), 0.5f, 0.5f, 0.5f);
+    glUniform3f(glGetUniformLocation(shader.GetID(), "light.direction"), 1.0f, 1.0f, 0.0f);
     glUniform1f(glGetUniformLocation(shader.GetID(), "shininess"), 32.0f);
 
     while (!glfwWindowShouldClose(window))
