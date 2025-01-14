@@ -7,8 +7,9 @@
 class Texture
 {
 public:
-    Texture(const char *path, GLenum texture_type, GLenum slot, GLenum format, GLenum pixel_type);
+    Texture(const char *path, const char *texture_type, GLenum slot);
     [[nodiscard]] GLuint GetID() const { return id_; }
+    [[nodiscard]] const char *GetType() const { return type_; }
 
     void Activate(const Shader &shader, const char *uniform_name, GLint texture_slot) const;
     void Bind() const;
@@ -18,7 +19,7 @@ public:
 private:
     GLuint id_{};
     GLuint unit_{};
-    GLenum type_{};
+    const char *type_{};
 };
 
 #endif

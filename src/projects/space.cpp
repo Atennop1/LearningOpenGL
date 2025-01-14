@@ -52,12 +52,12 @@ void SpaceProject::Activate() const
     glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.linear"), 0.09f);
     glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.quadratic"), 0.032f);
 
-    auto cube_texture = Texture("media/space/container.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+    auto cube_texture = Texture("media/space/container.png", "diffuse", 0);
     cube_texture.Activate(cube_shader, "tex0", 0);
     cube_texture.Activate(cube_shader, "material.diffuse", 0);
     cube_texture.Bind();
 
-    auto cube_specular_texture = Texture("media/space/container_specular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+    auto cube_specular_texture = Texture("media/space/container_specular.png", "specular", 1);
     cube_specular_texture.Activate(cube_shader, "material.specular", 1);
     cube_specular_texture.Bind();
 

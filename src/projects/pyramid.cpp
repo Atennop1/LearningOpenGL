@@ -39,7 +39,7 @@ void PyramidProject::Activate() const
     auto shader = Shader("shaders/pyramid/pyramid.vert", "shaders/pyramid/pyramid.frag");
     GLint scale_uniform_ID = glGetUniformLocation(shader.GetID(), "scale");
 
-    auto texture = Texture("media/pyramid/medik.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+    auto texture = Texture("media/pyramid/medik.png", "diffuse", GL_TEXTURE0);
     texture.Activate(shader, "tex0", 0);
 
     auto vao = VAO();

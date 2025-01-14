@@ -36,12 +36,12 @@ void ModelProject::Activate() const
 
     std::vector<std::pair<std::string, Texture>> cube_textures
     {
-        { "material.diffuse", Texture("media/space/container.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE) },
-        { "material.specular", Texture("media/space/container_specular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE) }
+        { "material.diffuse", Texture("media/space/container.png", "diffuse", 0) },
+        { "material.specular", Texture("media/space/container_specular.png", "specular", 1) }
     };
 
     auto cube_mesh = Mesh(model_cube_vertices, model_cube_indexes, cube_textures);
-    auto cube_shader = Shader("shaders/model/cube.vert", "shaders/model/cube.frag");
+    auto cube_shader = Shader("shaders/Model/model.vert", "shaders/Model/model.frag");
     GLint cube_model_matrix_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "model_matrix");
     GLint cube_light_position_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "light.position");
     GLint cube_camera_position_uniform_ID = glGetUniformLocation(cube_shader.GetID(), "camera_position");
@@ -56,7 +56,7 @@ void ModelProject::Activate() const
     glUniform1f(glGetUniformLocation(cube_shader.GetID(), "light.quadratic"), 0.032f);
 
     auto lamp_mesh = Mesh(model_lamp_vertices, model_lamp_indexes, cube_textures);
-    auto lamp_shader = Shader("shaders/model/lamp.vert", "shaders/model/lamp.frag");
+    auto lamp_shader = Shader("shaders/Model/lamp.vert", "shaders/Model/lamp.frag");
     GLint lamp_model_matrix_uniform_ID = glGetUniformLocation(lamp_shader.GetID(), "model_matrix");
     GLint lamp_light_color_uniform_ID = glGetUniformLocation(lamp_shader.GetID(), "light_color");
 

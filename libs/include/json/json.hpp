@@ -7859,7 +7859,7 @@ class lexer : public lexer_base<BasicJsonType>
     The function is realized with a deterministic finite state machine derived
     from the grammar described in RFC 8259. Starting in state "init", the
     input is read and used to determined the next state. Only state "done"
-    accepts the number. State "error" is a trap state to model errors. In the
+    accepts the number. State "error" is a trap state to Model errors. In the
     table below, "anything" means any character but the ones listed before.
 
     state    | 0        | 1-9      | e E      | +       | -       | .        | anything
@@ -9009,7 +9009,7 @@ class json_sax_dom_parser
 
     /// the parsed JSON value
     BasicJsonType& root;
-    /// stack to model hierarchy of values
+    /// stack to Model hierarchy of values
     std::vector<BasicJsonType*> ref_stack {};
     /// helper to hold the reference for the next object element
     BasicJsonType* object_element = nullptr;
@@ -9438,7 +9438,7 @@ class json_sax_dom_callback_parser
 
     /// the parsed JSON value
     BasicJsonType& root;
-    /// stack to model hierarchy of values
+    /// stack to Model hierarchy of values
     std::vector<BasicJsonType*> ref_stack {};
     /// stack to manage which values to keep
     std::vector<bool> keep_stack {}; // NOLINT(readability-redundant-member-init)

@@ -32,7 +32,9 @@ add_executable(LearningOpenGL
         include/system/vertex.hpp src/system/mesh.cpp
         include/system/mesh.hpp src/projects/model.cpp
         include/projects/model.hpp
-        include/projects/model_vertices.hpp)
+        include/projects/model_vertices.hpp
+        src/system/model.cpp
+        include/system/model.hpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/libs/include include)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/libs/lib/glfw/libglfw3.a)
