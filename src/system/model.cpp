@@ -1,12 +1,19 @@
+#include <iostream>
 #include "system/model.hpp"
-#include "system/utils.hpp"
 #include "glm/gtc/type_ptr.hpp"
+
+extern std::string GetFileContents(const char* filename);
 
 Model::Model(const char *filename)
 {
     filename_ = filename;
     JSON_ = nlohmann::json::parse(GetFileContents(filename));
-    data_bytes_ = GetDataBytes();
+
+    std::string uri = JSON_["buffers"][0]["uri"];
+    std::string subdirectory = filename_.substr(0, filename_.find_last_of('/') + 1);
+    std::string bytes_text = GetFileContents((subdirectory + uri).c_str());
+    data_bytes_ = { bytes_text.begin(), bytes_text.end() };
+
     TraverseNode(0);
 }
 
@@ -16,42 +23,63 @@ void Model::Draw(const Shader &shader, Camera &camera)
         meshes_[i].Draw(shader, camera, matrices_meshes_[i]);
 }
 
-std::vector<unsigned char> Model::GetDataBytes()
+void Model::TraverseNode(unsigned int next_node, glm::mat4 matrix)
 {
-    std::string uri = JSON_["buffers"][0]["uri"];
-    std::string subdirectory = filename_.substr(0, filename_.find_last_of('/') + 1);
-    std::string bytes_text = GetFileContents((subdirectory + uri).c_str());
-    return { bytes_text.begin(), bytes_text.end() };
-}
+    nlohmann::json node = JSON_["nodes"][next_node];
 
-std::vector<float> Model::GetFloats(nlohmann::json accessor)
-{
-    unsigned int count = accessor["count"];
-    unsigned int accessor_byte_offset = accessor.value("byteOffset", 0);
-    unsigned int buffer_view_index = accessor.value("bufferView", 1);
-    std::string type = accessor["type"];
+    glm::vec3 translation = node.find("translation") == node.end() ? glm::vec3(0.0f, 0.0f, 0.0f) : glm::vec3(node["translation"][0], node["translation"][1], node["translation"][2]);
+    glm::quat rotation = node.find("rotation") == node.end() ? glm::quat(1.0f, 0.0f, 0.0f, 0.0f) : glm::quat(node["rotation"][3], node["rotation"][0], node["rotation"][1], node["rotation"][2]);
+    glm::vec3 scale = node.find("scale") == node.end() ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(node["scale"][0], node["scale"][1], node["scale"][2]);
 
-    if (type != "SCALAR" && type != "VEC2" && type != "VEC3" && type != "VEC4")
-        throw std::invalid_argument("Type is invalid (not SCALAR, VEC2, VEC3 or VEC4)");
-
-    nlohmann::json buffer_view = JSON_["bufferViews"][buffer_view_index];
-    unsigned int byte_offset = buffer_view["byteOffset"];
-    unsigned int number_per_vertex = (type == "SCALAR" ? 1 : (type == "VEC2" ? 2 : (type == "VEC3" ? 3 : 4)));
-
-    unsigned int start_of_data = byte_offset + accessor_byte_offset;
-    unsigned int length_of_data = 4 * count * number_per_vertex;
-
-    std::vector<float> floats;
-    for (unsigned int i = start_of_data; i < start_of_data + length_of_data; i)
+    glm::mat4 matrix_node = glm::mat4(1.0f);
+    if (node.find("matrix") != node.end())
     {
-        float value = 0.0f;
-        unsigned char bytes[] = { data_bytes_[i++], data_bytes_[i++], data_bytes_[i++], data_bytes_[i++] };
+        float matrix_values[16];
 
-        std::memcpy(&value, bytes, sizeof (float));
-        floats.push_back(value);
+        for (unsigned int i = 0; i < node["matrix"].size(); ++i)
+            matrix_values[i] = node["matrix"][i];
+
+        matrix_node = glm::make_mat4(matrix_values);
     }
 
-    return floats;
+    glm::mat4 translation_matrix = glm::translate(glm::mat4(1.0f), translation);
+    glm::mat4 rotation_matrix = glm::mat4_cast(rotation);
+    glm::mat4 scale_matrix = glm::scale(glm::mat4(1.0f), scale);
+    glm::mat4 matrix_next_node = matrix * matrix_node * translation_matrix * rotation_matrix * scale_matrix;
+
+    if (node.find("mesh") != node.end())
+    {
+        translations_meshes_.push_back(translation);
+        rotations_meshes_.push_back(rotation);
+        scales_meshes_.push_back(scale);
+        matrices_meshes_.push_back(matrix_next_node);
+        LoadMesh(node["mesh"]);
+    }
+
+    if (node.find("children") != node.end())
+        for (const auto &i : node["children"])
+            TraverseNode(i, matrix_next_node);
+}
+
+void Model::LoadMesh(unsigned int mesh_index)
+{
+    unsigned int position_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["attributes"]["POSITION"];
+    unsigned int normal_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["attributes"]["NORMAL"];
+    unsigned int texture_UV_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["attributes"]["TEXCOORD_0"];
+    unsigned int indexes_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["indices"];
+
+    std::vector<float> position_vectors = GetFloats(JSON_["accessors"][position_accessor_index]);
+    std::vector<float> normal_vectors = GetFloats(JSON_["accessors"][normal_accessor_index]);
+    std::vector<float> texture_UV_vectors = GetFloats(JSON_["accessors"][texture_UV_accessor_index]);
+    std::vector<glm::vec3> positions = GroupFloatsInVec3(position_vectors);
+    std::vector<glm::vec3> normals = GroupFloatsInVec3(normal_vectors);
+    std::vector<glm::vec2> textures_UV = GroupFloatsInVec2(texture_UV_vectors);
+
+    std::vector<Vertex> vertices = AssembleVertices(positions, normals, textures_UV);
+    std::vector<GLuint> indexes = GetIndexes(JSON_["accessors"][indexes_accessor_index]);
+    std::vector<Texture> textures = GetTextures();
+
+    meshes_.emplace_back(vertices, indexes, textures);
 }
 
 std::vector<GLuint> Model::GetIndexes(nlohmann::json accessor)
@@ -120,63 +148,45 @@ std::vector<Texture> Model::GetTextures()
     return textures;
 }
 
-void Model::LoadMesh(unsigned int mesh_index)
+std::vector<float> Model::GetFloats(nlohmann::json accessor)
 {
-    unsigned int position_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["attribute"]["POSITION"];
-    unsigned int normal_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["attribute"]["NORMAL"];
-    unsigned int texture_UV_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["attribute"]["TEXCOORD_0"];
-    unsigned int indexes_accessor_index = JSON_["meshes"][mesh_index]["primitives"][0]["attribute"]["indices"];
+    unsigned int count = accessor["count"];
+    unsigned int accessor_byte_offset = accessor.value("byteOffset", 0);
+    unsigned int buffer_view_index = accessor.value("bufferView", 1);
+    std::string type = accessor["type"];
 
-    std::vector<float> position_vectors = GetFloats(JSON_["accessors"][position_accessor_index]);
-    std::vector<float> normal_vectors = GetFloats(JSON_["accessors"][normal_accessor_index]);
-    std::vector<float> texture_UV_vectors = GetFloats(JSON_["accessors"][texture_UV_accessor_index]);
-    std::vector<glm::vec3> positions = GroupFloatsInVec3(position_vectors);
-    std::vector<glm::vec3> normals = GroupFloatsInVec3(normal_vectors);
-    std::vector<glm::vec2> textures_UV = GroupFloatsInVec2(texture_UV_vectors);
+    if (type != "SCALAR" && type != "VEC2" && type != "VEC3" && type != "VEC4")
+        throw std::invalid_argument("Type is invalid (not SCALAR, VEC2, VEC3 or VEC4)");
 
-    std::vector<Vertex> vertices = AssembleVertices(positions, normals, textures_UV);
-    std::vector<GLuint> indexes = GetIndexes(JSON_["accessors"][indexes_accessor_index]);
-    std::vector<Texture> textures = GetTextures();
+    nlohmann::json buffer_view = JSON_["bufferViews"][buffer_view_index];
+    unsigned int byte_offset = buffer_view["byteOffset"];
+    unsigned int number_per_vertex = (type == "SCALAR" ? 1 : (type == "VEC2" ? 2 : (type == "VEC3" ? 3 : 4)));
 
-    meshes_.emplace_back(vertices, indexes, textures);
+    unsigned int start_of_data = byte_offset + accessor_byte_offset;
+    unsigned int length_of_data = 4 * count * number_per_vertex;
+
+    std::vector<float> floats;
+    for (unsigned int i = start_of_data; i < start_of_data + length_of_data; i)
+    {
+        float value = 0.0f;
+        unsigned char bytes[] = { data_bytes_[i++], data_bytes_[i++], data_bytes_[i++], data_bytes_[i++] };
+
+        std::memcpy(&value, bytes, sizeof (float));
+        floats.push_back(value);
+    }
+
+    return floats;
 }
 
-void Model::TraverseNode(unsigned int next_node, glm::mat4 matrix)
+std::vector<Vertex> Model::AssembleVertices(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2> texture_coords)
 {
-    nlohmann::json node = JSON_["nodes"][next_node];
+    std::vector<Vertex> vertices = {};
+    vertices.reserve(positions.size());
 
-    glm::vec3 translation = node.find("translation") == node.end() ? glm::vec3(0.0f, 0.0f, 0.0f) : glm::vec3(node["translation"][0], node["translation"][1], node["translation"][2]);
-    glm::quat rotation = node.find("rotation") == node.end() ? glm::quat(1.0f, 0.0f, 0.0f, 0.0f) : glm::quat(node["rotation"][3], node["rotation"][0], node["rotation"][1], node["rotation"][2]);
-    glm::vec3 scale = node.find("scale") == node.end() ? glm::vec3(0.0f, 0.0f, 0.0f) : glm::vec3(node["scale"][0], node["scale"][1], node["scale"][2]);
+    for (int i = 0; i < positions.size(); i++)
+        vertices.push_back(Vertex { positions[i], normals[i], texture_coords[i] });
 
-    glm::mat4 matrix_node = glm::mat4(1.0f);
-    if (node.find("matrix") != node.end())
-    {
-        float matrix_values[16];
-
-        for (unsigned int i = 0; i < node["matrix"].size(); ++i)
-            matrix_values[i] = node["matrix"][i];
-
-        matrix_node = glm::make_mat4(matrix_values);
-    }
-
-    glm::mat4 translation_matrix = glm::translate(glm::mat4(1.0f), translation);
-    glm::mat4 rotation_matrix = glm::mat4_cast(rotation);
-    glm::mat4 scale_matrix = glm::scale(glm::mat4(1.0f), scale);
-    glm::mat4 matrix_next_node = matrix * matrix_node * translation_matrix * rotation_matrix * scale_matrix;
-
-    if (node.find("mesh") != node.end())
-    {
-        translations_meshes_.push_back(translation);
-        rotations_meshes_.push_back(rotation);
-        scales_meshes_.push_back(scale);
-        matrices_meshes_.push_back(matrix_next_node);
-        LoadMesh(node["mesh"]);
-    }
-
-    if (node.find("children") != node.end())
-        for (const auto &i : node["children"])
-            TraverseNode(i, matrix_next_node);
+    return vertices;
 }
 
 std::vector<glm::vec2> Model::GroupFloatsInVec2(std::vector<float> floats)
@@ -207,14 +217,4 @@ std::vector<glm::vec4> Model::GroupFloatsInVec4(std::vector<float> floats)
         vectors.emplace_back(floats[i++], floats[i++], floats[i++], floats[i++]);
 
     return vectors;
-}
-
-std::vector<Vertex> Model::AssembleVertices(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2> texture_coords)
-{
-    std::vector<Vertex> vertices = {};
-
-    for (int i = 0; i < positions.size(); i)
-        vertices.push_back(Vertex { positions[i], normals[i], texture_coords[i] });
-
-    return vertices;
 }

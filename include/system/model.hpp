@@ -17,18 +17,17 @@ public:
     void Draw(const Shader &shader, Camera &camera);
 
 private:
-    std::vector<unsigned char> GetDataBytes();
+    void TraverseNode(unsigned int next_node, glm::mat4 matrix = glm::mat4(1.0f));
+    void LoadMesh(unsigned int mesh_index);
+
     std::vector<float> GetFloats(nlohmann::json accessor);
     std::vector<GLuint> GetIndexes(nlohmann::json accessor);
     std::vector<Texture> GetTextures();
 
-    void LoadMesh(unsigned int mesh_index);
-    void TraverseNode(unsigned int next_node, glm::mat4 matrix = glm::mat4(1.0f));
-
+    std::vector<Vertex> AssembleVertices(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2> texture_coords);
     std::vector<glm::vec2> GroupFloatsInVec2(std::vector<float> floats);
     std::vector<glm::vec3> GroupFloatsInVec3(std::vector<float> floats);
     std::vector<glm::vec4> GroupFloatsInVec4(std::vector<float> floats);
-    std::vector<Vertex> AssembleVertices(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2> texture_coords);
 
     std::string filename_;
     nlohmann::json JSON_;

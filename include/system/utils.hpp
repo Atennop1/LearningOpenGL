@@ -1,5 +1,4 @@
-#ifndef LEARNINGOPENGL_INCLUDE_UTILS_HPP_
-#define LEARNINGOPENGL_INCLUDE_UTILS_HPP_
+#pragma once
 
 #include <string>
 #include <fstream>
@@ -48,4 +47,3 @@ void CompileShaderErrors(unsigned int shader, const char *type)
     }
 }
 
-#endif
