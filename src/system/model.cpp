@@ -86,7 +86,7 @@ std::vector<GLuint> Model::GetIndexes(nlohmann::json accessor)
 {
     unsigned int count = accessor["count"];
     unsigned int accessor_byte_offset = accessor.value("byteOffset", 0);
-    unsigned int buffer_view_index = accessor.value("bufferView", 1);
+    unsigned int buffer_view_index = accessor.value("bufferView", 0);
     unsigned int component_type = accessor["componentType"];
 
     if (component_type != 5125 && component_type != 5123 && component_type != 5122)
@@ -126,7 +126,7 @@ std::vector<Texture> Model::GetTextures()
         std::string texture_path = JSON_["images"][i]["uri"];
 
         bool skip = false;
-        for (unsigned int j = 0; j < loaded_textures_.size(); ++j)
+        for (unsigned int j = 0; j < loaded_textures_names_.size(); ++j)
         {
             if (loaded_textures_names_[j] != texture_path)
                 continue;
@@ -139,7 +139,7 @@ std::vector<Texture> Model::GetTextures()
         if (skip)
             continue;
 
-        Texture texture = Texture((subdirectory + texture_path).c_str(), (texture_path.find("baseColor") != std::string::npos ? "diffuse" : "specular"), loaded_textures_.size());
+        Texture texture = Texture((subdirectory + texture_path).c_str(), (texture_path.find("baseColor") != std::string::npos ? "diffuse" : (texture_path.find("baseColor") != std::string::npos ? "specular" : "tex")), loaded_textures_.size());
         textures.push_back(texture);
         loaded_textures_.push_back(texture);
         loaded_textures_names_.push_back(texture_path);
