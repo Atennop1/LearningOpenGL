@@ -93,7 +93,7 @@ std::vector<GLuint> Model::GetIndexes(nlohmann::json accessor)
         throw std::invalid_argument("Type is invalid (not unsigned int, unsigned short or short)");
 
     nlohmann::json buffer_view = JSON_["bufferViews"][buffer_view_index];
-    unsigned int byte_offset = buffer_view["byteOffset"];
+    unsigned int byte_offset = buffer_view.value("byteOffset", 0);
     unsigned int start_of_data = byte_offset + accessor_byte_offset;
 
     std::vector<GLuint> indexes;
@@ -159,7 +159,7 @@ std::vector<float> Model::GetFloats(nlohmann::json accessor)
         throw std::invalid_argument("Type is invalid (not SCALAR, VEC2, VEC3 or VEC4)");
 
     nlohmann::json buffer_view = JSON_["bufferViews"][buffer_view_index];
-    unsigned int byte_offset = buffer_view["byteOffset"];
+    unsigned int byte_offset = buffer_view.value("byteOffset", 0);
     unsigned int number_per_vertex = (type == "SCALAR" ? 1 : (type == "VEC2" ? 2 : (type == "VEC3" ? 3 : 4)));
 
     unsigned int start_of_data = byte_offset + accessor_byte_offset;

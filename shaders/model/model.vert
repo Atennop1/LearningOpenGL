@@ -18,5 +18,5 @@ void main()
     current_position = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f));
     gl_Position = camera_matrix * vec4(current_position, 1.0f);
     normal = mat3(transpose(inverse(model))) * aNormal;
-    tex_coord = aTex;
+    tex_coord = mat2(1.0, 0.0, 0.0, -1.0) * aTex;
 }

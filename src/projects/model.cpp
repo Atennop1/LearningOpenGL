@@ -30,7 +30,7 @@ void ModelProject::Activate() const
 
     auto camera = Camera();
     glfwSetWindowUserPointer(window, &camera);
-    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.0f, 3.0f));
+    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 2.0f, 15.0f));
 
     auto shader = Shader("shaders/model/model.vert", "shaders/model/model.frag");
     auto model = Model("media/model/scene.gltf");
@@ -38,7 +38,8 @@ void ModelProject::Activate() const
 
     glUniform3f(glGetUniformLocation(shader.GetID(), "light.ambient"), 0.2f, 0.2f, 0.2f);
     glUniform3f(glGetUniformLocation(shader.GetID(), "light.diffuse"), 0.5f, 0.5f, 0.5f);
-    glUniform3f(glGetUniformLocation(shader.GetID(), "light.direction"), 1.0f, 1.0f, 0.0f);
+    glUniform3f(glGetUniformLocation(shader.GetID(), "light.direction"), -0.2f, -1.0f, -0.3f);
+    glUniform1f(glGetUniformLocation(shader.GetID(), "light.strength"), 1.0f);
     glUniform1f(glGetUniformLocation(shader.GetID(), "shininess"), 32.0f);
 
     while (!glfwWindowShouldClose(window))
