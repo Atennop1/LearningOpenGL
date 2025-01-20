@@ -20,8 +20,10 @@ uniform Light light;
 
 uniform sampler2D diffuse0;
 uniform sampler2D specular0;
-
 uniform float shininess;
+
+float near = 0.1;
+float far  = 100.0;
 
 void main()
 {
@@ -37,6 +39,7 @@ void main()
     float spec = pow(max(dot(view_direction, reflect_direction), 0.0), shininess);
     vec3 specular = light.specular * spec * texture(specular0, tex_coord).rgb;
 
-    vec3 result = (ambient + diffuse + specular) * light.strength;
-    FragColor = texture(diffuse0, tex_coord) * vec4(result, 1.0);
+    vec3 light = (ambient + diffuse + specular) * light.strength;
+    float depth = 1 - (2.0 * near * far) / (far + near - (gl_FragCoord.z * 2.0 - 1.0) * (far - near)) / far;
+    FragColor = texture(diffuse0, tex_coord) * vec4(light, 1.0) * vec4(vec3(depth), 1.0);
 }
