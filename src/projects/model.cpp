@@ -27,38 +27,56 @@ void ModelProject::Activate() const
 
     glViewport(0, 0, 800, 800);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     auto camera = Camera();
     glfwSetWindowUserPointer(window, &camera);
-    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 2.0f, 15.0f));
+    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 15.0f, 25.0f));
 
-    auto shader = Shader("shaders/model/model.vert", "shaders/model/model.frag");
+    auto model_shader = Shader("shaders/model/model.vert", "shaders/model/model.frag");
+    auto outline_shader = Shader("shaders/model/outline.vert", "shaders/model/outline.frag");
     auto model = Model("media/model/scene.gltf");
-    shader.Activate();
 
-    glUniform3f(glGetUniformLocation(shader.GetID(), "light.ambient"), 0.2f, 0.2f, 0.2f);
-    glUniform3f(glGetUniformLocation(shader.GetID(), "light.diffuse"), 0.5f, 0.5f, 0.5f);
-    glUniform3f(glGetUniformLocation(shader.GetID(), "light.direction"), -0.2f, -1.0f, -0.3f);
-    glUniform1f(glGetUniformLocation(shader.GetID(), "light.strength"), 1.0f);
-    glUniform1f(glGetUniformLocation(shader.GetID(), "shininess"), 32.0f);
+    model_shader.Activate();
+    glUniform3f(glGetUniformLocation(model_shader.GetID(), "light.ambient"), 0.2f, 0.2f, 0.2f);
+    glUniform3f(glGetUniformLocation(model_shader.GetID(), "light.diffuse"), 0.5f, 0.5f, 0.5f);
+    glUniform3f(glGetUniformLocation(model_shader.GetID(), "light.direction"), -0.2f, -1.0f, -0.3f);
+    glUniform1f(glGetUniformLocation(model_shader.GetID(), "light.strength"), 1.0f);
+    glUniform1f(glGetUniformLocation(model_shader.GetID(), "shininess"), 32.0f);
+
+    outline_shader.Activate();
+    glUniform1f(glGetUniformLocation(outline_shader.GetID(), "outline_thickness"), 0.15f);
 
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
         camera.HandleInput(window);
         camera.UpdateMatrix(0.1f, 100.0f);
-        model.Draw(shader, camera);
+
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+        model.Draw(model_shader, camera);
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+        model.Draw(outline_shader, camera);
+
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glEnable(GL_DEPTH_TEST);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    shader.Delete();
+    model_shader.Delete();
     glfwDestroyWindow(window);
     glfwTerminate();
 }

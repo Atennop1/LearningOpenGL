@@ -23,7 +23,7 @@ uniform sampler2D specular0;
 uniform float shininess;
 
 float near = 0.1;
-float far  = 100.0;
+float far = 100.0;
 
 void main()
 {
