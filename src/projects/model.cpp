@@ -26,13 +26,16 @@ void ModelProject::Activate() const
     gladLoadGL();
 
     glViewport(0, 0, 800, 800);
-    glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     auto camera = Camera();
     glfwSetWindowUserPointer(window, &camera);
-    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 15.0f, 25.0f));
+    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     auto model_shader = Shader("shaders/model/model.vert", "shaders/model/model.frag");
     auto outline_shader = Shader("shaders/model/outline.vert", "shaders/model/outline.frag");
@@ -46,10 +49,30 @@ void ModelProject::Activate() const
     glUniform1f(glGetUniformLocation(model_shader.GetID(), "shininess"), 32.0f);
 
     outline_shader.Activate();
-    glUniform1f(glGetUniformLocation(outline_shader.GetID(), "outline_thickness"), 0.15f);
+    glUniform1f(glGetUniformLocation(outline_shader.GetID(), "outline_thickness"), 0.01f);
+
+    double previous_time = 0.0;
+    double current_time = 0.0;
+    double time_difference = 0.0;
+    unsigned int counter = 0;
 
     while (!glfwWindowShouldClose(window))
     {
+        current_time = glfwGetTime();
+        time_difference = current_time - previous_time;
+        counter++;
+
+        if (time_difference >= 1.0 / 30.0)
+        {
+            std::string FPS = std::to_string(int ((1.0 / time_difference) * counter));
+            std::string ms = std::to_string((time_difference / counter) * 1000);
+            std::string title = std::string("OpenGL - ").append(FPS).append("FPS / ").append(ms).append("ms");
+            glfwSetWindowTitle(window, title.c_str());
+
+            previous_time = current_time;
+            counter = 0;
+        }
+
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 

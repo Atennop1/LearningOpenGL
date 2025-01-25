@@ -54,6 +54,7 @@ Mesh::~Mesh()
     VBO_.Delete();
     EBO_.Delete();
 }
+
 void Mesh::Draw(const Shader &shader, Camera &camera, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
 {
     shader.Activate();
