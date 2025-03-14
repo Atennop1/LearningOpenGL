@@ -35,7 +35,7 @@ void ModelProject::Activate() const
 
     auto camera = Camera();
     glfwSetWindowUserPointer(window, &camera);
-    camera.Initialize(window, window_width, window_height, glm::vec3(0.0f, 0.0f, 2.0f));
+    camera.Initialize(window, window_width, window_height, glm::vec3(-0.25f, -0.2f, 1.3f));
 
     auto model_shader = Shader("shaders/model/model.vert", "shaders/model/model.frag");
     auto outline_shader = Shader("shaders/model/outline.vert", "shaders/model/outline.frag");
